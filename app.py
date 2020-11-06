@@ -12,6 +12,11 @@ from fig_utils import get_bar_chart,get_pie
 from data_utils import collapsed_data
 import os
 import time
+import numpy 
+
+numpy.seterr(divide = 'ignore') 
+
+
 
 os.environ["TZ"] = "Asia/Kolkata"
 time.tzset()
