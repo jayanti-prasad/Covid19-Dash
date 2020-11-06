@@ -71,7 +71,7 @@ app.layout = html.Div([
           html.Td(
             dcc.RadioItems(
                 id='mode',
-                options=[{'label': i, 'value': i} for i in ['Cumulative','Daily','Active','Bar','Pie1','Pie2']],
+                options=[{'label': i, 'value': i} for i in ['Cumulative','Daily','Active','Bar','Pie']],
                 value='Cumulative',
                 labelStyle={'display': 'inline-block'}),
           ),
@@ -209,8 +209,6 @@ def update_graph(geography,region,district,rolling_type,rolling_size,start_date,
 
     columns = ['confirmed','recovered','deaths']
 
-    pcol={'Pie1':'confirmed','Pie2':'deaths'}  
-
     if mode == 'Bar':
        if geography == 'World':
           df = collapsed_data (dF1,'country',30)[:-1]
@@ -227,14 +225,14 @@ def update_graph(geography,region,district,rolling_type,rolling_size,start_date,
 
           fig =  get_bar_chart (df, 'State')
 
-    elif mode == 'Pie1' or mode == 'Pie2':
+    elif mode == 'Pie':
        if geography == 'World':
           df = collapsed_data (dF1,'country',30)
        if geography == 'India':
           df = collapsed_data (dF2, 'State', 30)
           df = df[df['State'] !='Total']
           df[columns] = df[columns].astype(float)
-       fig = get_pie(df, geography, pcol[mode]) 
+       fig = get_pie(df, geography) 
 
     else:
  
