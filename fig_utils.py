@@ -1,7 +1,6 @@
 import plotly.express as px
 from plotly.subplots import make_subplots
-from data_utils import get_district_data,get_data_world,get_data_india
-from datetime import datetime,date 
+from datetime import datetime,date
 import numpy as np
 
 def update_dropdown(name):
@@ -27,34 +26,37 @@ def get_figure (df, region, title, mode, plot_style, rolling_type, rolling_size)
     df['removed'] = df['Recovered'].add (df['Deaths'],fill_value=0)
     df['Active']  = df['Confirmed'].subtract (df['removed'],fill_value=0)
 
+    date = df['date'].to_list()
     X = df['Confirmed']
     Y = df['Recovered']
     Z = df['Deaths']
-    title = region + " (Total)"
-    x, y, z = X, Y, Z
+    x, y, z = X,Y, Z
+
+    L1,L2,L3='Confirmed','Recovered','Deaths'
 
     if mode == 'Daily':
        x = X.diff(periods=1).iloc[1:]
        y = Y.diff(periods=1).iloc[1:]
        z = Z.diff(periods=1).iloc[1:]
-       title = region + " (Daily)"
+       title = title + " (Daily)"
 
     elif mode == 'Active':
        x = df['Active']
        y = df['Active']
        z = Z
-       title = region + " (Active)"
+       title = title + " (Active)"
+       L1,L2='','Active'
     else:
        x, y, z = X, Y, Z
-       title = region + " (Cumulative)"
+       title = title + " (Cumulative)"
 
     x = transform (x, plot_style, rolling_type, rolling_size)
     y = transform (y, plot_style, rolling_type, rolling_size)
     z = transform (z, plot_style, rolling_type, rolling_size)
 
-    fig1 = px.scatter(x)
-    fig2 = px.scatter(y)
-    fig3 = px.scatter(z)
+    fig1 = px.scatter(x=x.index, y=x.values)
+    fig2 = px.scatter(x=y.index, y=y.values)
+    fig3 = px.scatter(x=z.index, y=z.values)
 
     trace1 = fig1['data'][0]
     trace2 = fig2['data'][0]
@@ -67,7 +69,7 @@ def get_figure (df, region, title, mode, plot_style, rolling_type, rolling_size)
     fig.add_trace(trace1, row=1, col=1)
     fig.add_trace(trace2, row=1, col=1)
     fig.add_trace(trace3, row=2, col=1)
- 
+
     fig.data[0].update(mode='markers+lines')
     fig.data[1].update(mode='markers+lines')
     fig.data[2].update(mode='markers+lines')
@@ -76,7 +78,51 @@ def get_figure (df, region, title, mode, plot_style, rolling_type, rolling_size)
     fig['data'][1]['marker']['color']="green"
     fig['data'][2]['marker']['color']="red"
 
+    fig['data'][0]['showlegend']=True
+    fig['data'][1]['showlegend']=True
+    fig['data'][2]['showlegend']=True
+
+    fig['data'][0]['name']=L1
+    fig['data'][1]['name']=L2
+    fig['data'][2]['name']=L3
+
+
     return fig
+
+def get_bar_chart (df, name):
+    df = df[df[name] !='Total']
+    x = df[name].to_list()
+    L1,L2,L3='Confirmed','Recovered','Deaths'
+
+    fig1 = px.bar(x=x, y=df['confirmed'])
+    fig2 = px.bar(x=x, y=df['recovered'])
+    fig3 = px.bar(x=x, y=df['deaths'])
+
+    trace1 = fig1['data'][0]
+    trace2 = fig2['data'][0]
+    trace3 = fig3['data'][0]
+
+    fig = make_subplots(rows=2, cols=1,shared_xaxes=False,\
+      horizontal_spacing=0.1, vertical_spacing=0.05)
+
+    fig.add_trace(trace1, row=1, col=1)
+    fig.add_trace(trace2, row=1, col=1)
+    fig.add_trace(trace3, row=2, col=1)
+
+    fig['data'][0]['marker']['color']="blue"
+    fig['data'][1]['marker']['color']="green"
+    fig['data'][2]['marker']['color']="red"
+
+    fig['data'][0]['showlegend']=True
+    fig['data'][1]['showlegend']=True
+    fig['data'][2]['showlegend']=True
+
+    fig['data'][0]['name']=L1
+    fig['data'][1]['name']=L2
+    fig['data'][2]['name']=L3
+
+    return fig
+
 
 
 if __name__ == "__main__":
@@ -92,7 +138,7 @@ if __name__ == "__main__":
 
     for geography in ['World','India']:
        regions =  update_dropdown(geography)
- 
+
        for region in regions:
            if geography == 'World':
               df = dF1[dF1['country'] == region['value']]
@@ -100,6 +146,6 @@ if __name__ == "__main__":
            else :
               for state in states:
                   for district in STATES[state]:
-                      df = get_district_data (df3,state,district)                  
+                      df = get_district_data (df3,state,district)
                       print(geography, region['value'], state, district, df.shape, df.columns)
- 
+

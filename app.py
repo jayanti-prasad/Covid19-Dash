@@ -1,27 +1,33 @@
 import numpy as np
 import dash
 import plotly.express as px
-from plotly.subplots import make_subplots 
+from plotly.subplots import make_subplots
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
-from datetime import date, datetime 
-from data_utils import get_district_data,get_data_world,get_data_india 
-from fig_utils import get_figure 
+from datetime import date, datetime
+from data_utils import get_district_data,get_data_world,get_data_india
+from fig_utils import get_figure
+from fig_utils import get_bar_chart
+from data_utils import collapsed_data
+import os
+import time
 
+os.environ["TZ"] = "Asia/Kolkata"
+time.tzset()
 
 dF1, countries = get_data_world()
 dF2, df3, STATES  = get_data_india()
 
-countries = ["Total"] + countries 
+countries = ["Total"] + countries
 states = STATES.keys()
 
 start_date = datetime.strptime('2020-01-01', '%Y-%m-%d')
 end_date = date.today()
 
 external_stylesheets = ['bWLwgP.css']
+external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
-
 
 app.layout = html.Div([
     html.H1(children='Covid-19',style={'text-align': 'left'}),
@@ -35,7 +41,7 @@ app.layout = html.Div([
             value='India',
             labelStyle={'display': 'inline-block'}),
              style={'width': '100%', 'display': 'inline-block'}
-      ), 
+      ),
 
       html.Td(
          dcc.DatePickerRange(
@@ -58,9 +64,9 @@ app.layout = html.Div([
           html.Td(
             dcc.RadioItems(
                 id='mode',
-                options=[{'label': i, 'value': i} for i in ['Cumulative','Daily','Active']],
+                options=[{'label': i, 'value': i} for i in ['Cumulative','Daily','Active','Bar']],
                 value='Cumulative',
-                labelStyle={'display': 'inline-block'}), 
+                labelStyle={'display': 'inline-block'}),
           ),
           html.Td(
              dcc.RadioItems(
@@ -101,13 +107,13 @@ app.layout = html.Div([
        html.Td("https://github.com/CSSEGISandData/COVID-19"),
        html.Td("https://api.covid19india.org/"),
     ],style={'background-color':'#F8C471'}),
-   
-    ],style={'width':'50%','float':'center'}
+
+    ],style={'width':'100%','float':'center'}
     ),
 
     html.Div([
 
-    html.Div([ html.Div(id='output-container-date-picker'),]), 
+    html.Div([ html.Div(id='output-container-date-picker'),]),
     html.Br(),
     html.Br(),
     html.Br(),
@@ -115,7 +121,7 @@ app.layout = html.Div([
     dcc.Graph(id='indicator-graphic'),
    ]),
    html.H5(children='(c) Jayanti Prasad 2020 ',style={'text-align': 'center'})
-    
+
 ])
 
 
@@ -137,10 +143,10 @@ def transform (X, plot_style, rolling_type, rolling_size):
     [dash.dependencies.Input('regions', 'value')]
 )
 def update_dropdown_distrct(name):
-    if name in STATES.keys(): 
+    if name in STATES.keys():
        return [{'label': i, 'value': i} for i in STATES[name]]
     else:
-       return [{'label': "Default", 'value': 'TT'}]  
+       return [{'label': "Default", 'value': 'TT'}]
 
 
 @app.callback(
@@ -152,7 +158,7 @@ def update_dropdown(name):
          return [{'label': i, 'value': i} for i in countries]
     else:
          return [{'label': i, 'value': i} for i in states]
- 
+
 
 @app.callback(
     Output('indicator-graphic', 'figure'),
@@ -167,38 +173,64 @@ def update_dropdown(name):
 
 def update_graph(geography,region,district,rolling_type,rolling_size,start_date,end_date,mode,plot_style):
 
+
     rolling_size = int(rolling_size)
+
+    title = geography
 
     if geography == 'World':
        if region in countries[1:]:
           df = dF1[dF1['country'] == region]
-          df.index = df['date'].to_list() 
-       else: 
+          df.index = df['date'].to_list()
+          title =  region
+       else:
           df = dF1.groupby(['date']).sum()
-          if 'date' not in df.columns: 
-             df['date'] =  df.index  
+          title = 'World'
+          if 'date' not in df.columns:
+             df['date'] =  df.index
        df = df.loc[:, ~df.columns.str.contains('^Unnamed')]
     else :
        if region in states and  district in STATES[region]:
           df = get_district_data (df3,region,district)
+          if  district != 'Total':
+              title = district + "[ " + region + " ]"
+          else :
+              title = region
        else:
           df = dF1[dF1['country'] == 'India']
-    title = region 
+          title = 'India'
 
-    df.index = df['date'].to_list()
-    mask = (df['date'] > start_date) & (df['date'] <= end_date)
-    df = df.loc[mask] 
-    
-    df = df.rename(columns={'confirmed': 'Confirmed',\
-      'recovered':'Recovered','deaths':'Deaths'}, errors="raise")
+    columns = ['confirmed','recovered','deaths']
+  
+    if mode == 'Bar':
+       if geography == 'World':
+          df = collapsed_data (dF1,'country',30)
+          if plot_style == 'Log10':
+             df[columns] = np.log10(df[columns]) 
+          fig =  get_bar_chart (df, 'country')
+       if geography == 'India':
+          df = collapsed_data (dF2, 'State', 30)
+          if plot_style == 'Log10':
+             df[columns] = df[columns].astype(float)
+             df[columns] = np.log10(df[columns])
 
-    fig= get_figure(df, region, title, mode, plot_style, rolling_type, rolling_size)
+          fig =  get_bar_chart (df, 'State')
+    else:
+ 
+       df.index = df['date'].to_list()
+       mask = (df['date'] > start_date) & (df['date'] <= end_date)
+       df = df.loc[mask]
 
+       df = df.rename(columns={'confirmed': 'Confirmed',\
+         'recovered':'Recovered','deaths':'Deaths'}, errors="raise")
+       fig= get_figure(df, region, title, mode, plot_style, rolling_type, rolling_size)
+
+    fig.update_layout({'legend_orientation':'h'})
     fig.update_layout(width=1200,height=600,margin=dict(l=10, r=10, t=20, b=40))
 
     return fig
-  
+
 
 if __name__ == '__main__':
- 
+
     app.run_server(debug=True,dev_tools_silence_routes_logging=False)

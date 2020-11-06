@@ -5,7 +5,13 @@ from datetime import datetime
 import numpy as np
 import argparse 
 import matplotlib.pyplot as plt
+import platform
 
+if platform.system() == 'Darwin':
+   data_path="data/"
+else:
+   data_path="/home/drjprasad/covid-19/data/"
+    
 Months={'Jan':'01','Feb':'02','Mar':'03','Apr':'04',\
    'May':'05','Jun':'06','Jul':'07','Aug':'08',\
    'Sep':'09','Oct':'10','Nov':'11','Dec':'12'}
@@ -84,7 +90,7 @@ def get_district_data (dF, state, district):
 
 
 def get_data_world ():
-    dF = pd.read_csv("data/covid-19-global.csv", parse_dates=['date'])
+    dF = pd.read_csv(data_path + os.sep + "covid-19-global.csv", parse_dates=['date'])
     dates = sorted (dF['date'].to_list())
     last_date = dates.pop()
     df = dF[dF['date'] == last_date]
@@ -95,9 +101,9 @@ def get_data_world ():
 
 def get_data_india():
 
-   df1 = pd.read_csv("data/state_wise.csv")
-   df2 = pd.read_csv("data/state_wise_daily.csv")
-   df3 = pd.read_csv("data/districts.csv",parse_dates=['Date'])
+   df1 = pd.read_csv(data_path + os.sep + "state_wise.csv")
+   df2 = pd.read_csv(data_path + os.sep + "state_wise_daily.csv")
+   df3 = pd.read_csv(data_path + os.sep + "districts.csv",parse_dates=['Date'])
 
    dF, STATES = get_states_data (df1, df2)
 
@@ -113,6 +119,13 @@ def get_data_india():
       if s in DICT:
          STATES_NEW[s] = DICT[s]
    return dF, df3, STATES_NEW
+
+def collapsed_data (dF, name, num_rows):
+    dates = dF['date'].to_list()
+    last_date = list(pd.to_datetime(dates).sort_values()).pop()
+    df = dF[dF['date'] == last_date]
+    df = df.sort_values(by=['confirmed'],ascending=False)
+    return df.iloc[:num_rows].reset_index()[[name,'confirmed','recovered','deaths']].copy()
 
 
 if __name__ == "__main__":
