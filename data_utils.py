@@ -125,7 +125,16 @@ def collapsed_data (dF, name, num_rows):
     last_date = list(pd.to_datetime(dates).sort_values()).pop()
     df = dF[dF['date'] == last_date]
     df = df.sort_values(by=['confirmed'],ascending=False)
-    return df.iloc[:num_rows].reset_index()[[name,'confirmed','recovered','deaths']].copy()
+    df1 = df.iloc[:num_rows].reset_index()[[name,'confirmed','recovered','deaths']].copy()
+   
+    rest = df.iloc[num_rows:].sum()
+    rest [name] = 'Others'
+    last_index = len (df1)
+    for col in df1.columns:
+       if col in rest:
+         df1.at[last_index, col] = rest[col] 
+    return df1  
+
 
 
 if __name__ == "__main__":

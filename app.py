@@ -8,7 +8,7 @@ from dash.dependencies import Input, Output
 from datetime import date, datetime
 from data_utils import get_district_data,get_data_world,get_data_india
 from fig_utils import get_figure
-from fig_utils import get_bar_chart
+from fig_utils import get_bar_chart,get_pie
 from data_utils import collapsed_data
 import os
 import time
@@ -66,7 +66,7 @@ app.layout = html.Div([
           html.Td(
             dcc.RadioItems(
                 id='mode',
-                options=[{'label': i, 'value': i} for i in ['Cumulative','Daily','Active','Bar']],
+                options=[{'label': i, 'value': i} for i in ['Cumulative','Daily','Active','Bar','Pie']],
                 value='Cumulative',
                 labelStyle={'display': 'inline-block'}),
           ),
@@ -206,17 +206,26 @@ def update_graph(geography,region,district,rolling_type,rolling_size,start_date,
   
     if mode == 'Bar':
        if geography == 'World':
-          df = collapsed_data (dF1,'country',30)
+          df = collapsed_data (dF1,'country',30)[:-1]
           if plot_style == 'Log10':
              df[columns] = np.log10(df[columns]) 
           fig =  get_bar_chart (df, 'country')
        if geography == 'India':
-          df = collapsed_data (dF2, 'State', 30)
+          df = collapsed_data (dF2, 'State', 30)[:-1]
           if plot_style == 'Log10':
              df[columns] = df[columns].astype(float)
              df[columns] = np.log10(df[columns])
 
           fig =  get_bar_chart (df, 'State')
+
+    elif mode == 'Pie':
+       if geography == 'World':
+          df = collapsed_data (dF1,'country',30)
+       if geography == 'India':
+          df = collapsed_data (dF2, 'State', 30)
+          df = df[df['State'] !='Total']
+       fig = get_pie(df, geography) 
+
     else:
  
        df.index = df['date'].to_list()
@@ -228,7 +237,7 @@ def update_graph(geography,region,district,rolling_type,rolling_size,start_date,
        fig= get_figure(df, region, title, mode, plot_style, rolling_type, rolling_size)
 
     fig.update_layout({'legend_orientation':'h'})
-    fig.update_layout(width=1200,height=600,margin=dict(l=10, r=10, t=20, b=40))
+    fig.update_layout(width=1200,height=800,margin=dict(l=10, r=10, t=20, b=20))
 
     return fig
 
