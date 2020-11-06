@@ -224,6 +224,7 @@ def update_graph(geography,region,district,rolling_type,rolling_size,start_date,
        if geography == 'India':
           df = collapsed_data (dF2, 'State', 30)
           df = df[df['State'] !='Total']
+          df[columns] = df[columns].astype(float)
        fig = get_pie(df, geography) 
 
     else:
