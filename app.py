@@ -208,12 +208,14 @@ def update_graph(geography,region,district,rolling_type,rolling_size,start_date,
        if geography == 'World':
           df = collapsed_data (dF1,'country',30)[:-1]
           if plot_style == 'Log10':
+             df = df.dropna()
              df[columns] = np.log10(df[columns]) 
           fig =  get_bar_chart (df, 'country')
        if geography == 'India':
           df = collapsed_data (dF2, 'State', 30)[:-1]
           if plot_style == 'Log10':
              df[columns] = df[columns].astype(float)
+             df = df.dropna()
              df[columns] = np.log10(df[columns])
 
           fig =  get_bar_chart (df, 'State')
