@@ -101,9 +101,15 @@ def get_bar_chart (df, name):
     trace1 = fig1['data'][0]
     trace2 = fig2['data'][0]
     trace3 = fig3['data'][0]
+  
+    if name == 'country':
+       title = 'World'
+    else:
+       title = 'India'
+  
 
     fig = make_subplots(rows=2, cols=1,shared_xaxes=False,\
-      horizontal_spacing=0.1, vertical_spacing=0.05)
+      horizontal_spacing=0.1, vertical_spacing=0.05,y_title='Covid-19',subplot_titles=([title]))
 
     fig.add_trace(trace1, row=1, col=1)
     fig.add_trace(trace2, row=1, col=1)
