@@ -29,6 +29,8 @@ external_stylesheets = ['bWLwgP.css']
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
+app.title = 'Jayanti Prasad\'s Covid-19 Dashboard'
+
 app.layout = html.Div([
     html.H1(children='Covid-19',style={'text-align': 'left'}),
     html.Table(
