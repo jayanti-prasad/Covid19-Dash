@@ -2,7 +2,6 @@ import plotly.express as px
 from plotly.subplots import make_subplots
 from datetime import datetime,date
 import numpy as np
-import plotly.graph_objects as go
 from plotly.offline import plot
 
 def update_dropdown(name):
@@ -132,25 +131,34 @@ def get_bar_chart (df, name):
     return fig
 
 
-def  get_pie(df, name):
+def  get_pie(df, name, col):
 
     if name == 'World':
        title = 'World'
     else:
-       title = 'India'
+       title = 'India' 
+
+    title = title + " [ " + col + " ] "
 
     TAG = {'World':'country','India':'State'}
-  
+
+    """  
     fig = make_subplots(rows=1, cols=2, specs=[[{"type": "pie"}, {"type": "pie"}]],\
        x_title=title,subplot_titles=(['Confirmed','Deaths'])) 
 
+   
     fig.add_trace(go.Pie(values=df['confirmed'].to_list(),labels=df[TAG[name]].to_list(),domain=dict(x=[0, 0.5]),
        name="Confirmed"), row=1, col=1)
 
     fig.add_trace(go.Pie(values=df['deaths'].to_list(),labels=df[TAG[name]].to_list(),
        domain=dict(x=[0.5, 1.0]), name="Deaths"), row=1, col=2)
+    """
+
+    fig = px.pie(df, values=col, names=TAG[name], title=title)
 
     return fig  
+
+
         
 
 

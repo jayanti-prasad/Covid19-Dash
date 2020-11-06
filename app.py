@@ -71,7 +71,7 @@ app.layout = html.Div([
           html.Td(
             dcc.RadioItems(
                 id='mode',
-                options=[{'label': i, 'value': i} for i in ['Cumulative','Daily','Active','Bar','Pie']],
+                options=[{'label': i, 'value': i} for i in ['Cumulative','Daily','Active','Bar','Pie1','Pie2']],
                 value='Cumulative',
                 labelStyle={'display': 'inline-block'}),
           ),
@@ -208,7 +208,9 @@ def update_graph(geography,region,district,rolling_type,rolling_size,start_date,
           title = 'India'
 
     columns = ['confirmed','recovered','deaths']
-  
+
+    pcol={'Pie1':'confirmed','Pie2':'deaths'}  
+
     if mode == 'Bar':
        if geography == 'World':
           df = collapsed_data (dF1,'country',30)[:-1]
@@ -225,14 +227,14 @@ def update_graph(geography,region,district,rolling_type,rolling_size,start_date,
 
           fig =  get_bar_chart (df, 'State')
 
-    elif mode == 'Pie':
+    elif mode == 'Pie1' or mode == 'Pie2':
        if geography == 'World':
           df = collapsed_data (dF1,'country',30)
        if geography == 'India':
           df = collapsed_data (dF2, 'State', 30)
           df = df[df['State'] !='Total']
           df[columns] = df[columns].astype(float)
-       fig = get_pie(df, geography) 
+       fig = get_pie(df, geography, pcol[mode]) 
 
     else:
  
@@ -245,7 +247,7 @@ def update_graph(geography,region,district,rolling_type,rolling_size,start_date,
        fig= get_figure(df, region, title, mode, plot_style, rolling_type, rolling_size)
 
     fig.update_layout({'legend_orientation':'h'})
-    fig.update_layout(width=1200,height=800,margin=dict(l=10, r=10, t=20, b=20))
+    fig.update_layout(width=1200,height=800,margin=dict(l=10, r=10, t=40, b=20))
 
     return fig
 
