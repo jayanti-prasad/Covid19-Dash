@@ -6,12 +6,12 @@ import numpy as np
 import argparse 
 import matplotlib.pyplot as plt
 import platform
+import urllib.request
 
 if platform.system() == 'Darwin':
    data_path="data/"
 else:
-   data_path=os.getenv("HOME")+os.sep+"Covid19-Dash/data/"
-
+   data_path="https://raw.githubusercontent.com/jayanti-prasad/Covid19-Dash/master/data/"
 
 Months={'Jan':'01','Feb':'02','Mar':'03','Apr':'04',\
    'May':'05','Jun':'06','Jul':'07','Aug':'08',\
@@ -91,7 +91,11 @@ def get_district_data (dF, state, district):
 
 
 def get_data_world ():
-    dF = pd.read_csv(data_path + os.sep + "covid-19-global.csv", parse_dates=['date'])
+    if platform.system() == 'Darwin':
+       dF = pd.read_csv(data_path + os.sep + "covid-19-global.csv", parse_dates=['date'])
+    else:
+       dF = pd.read_csv(data_path +"covid-19-global.csv", parse_dates=['date'])
+
     dates = sorted (dF['date'].to_list())
     last_date = dates.pop()
     df = dF[dF['date'] == last_date]
@@ -101,10 +105,14 @@ def get_data_world ():
 
 
 def get_data_india():
-
-   df1 = pd.read_csv(data_path + os.sep + "state_wise.csv")
-   df2 = pd.read_csv(data_path + os.sep + "state_wise_daily.csv")
-   df3 = pd.read_csv(data_path + os.sep + "districts.csv",parse_dates=['Date'])
+   if platform.system() == 'Darwin':
+      df1 = pd.read_csv(data_path + os.sep + "state_wise.csv")
+      df2 = pd.read_csv(data_path + os.sep + "state_wise_daily.csv")
+      df3 = pd.read_csv(data_path + os.sep + "districts.csv",parse_dates=['Date'])
+   else:
+      df1 = pd.read_csv(data_path + "state_wise.csv")
+      df2 = pd.read_csv(data_path + "state_wise_daily.csv")
+      df3 = pd.read_csv(data_path + "districts.csv",parse_dates=['Date'])
 
    dF, STATES = get_states_data (df1, df2)
 
