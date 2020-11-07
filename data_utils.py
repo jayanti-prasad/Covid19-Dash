@@ -10,7 +10,7 @@ import platform
 if platform.system() == 'Darwin':
    data_path="data/"
 else:
-   data_path="/home/convid19db/Covid19-Dash/data/"
+   data_path="/home/covid19db/Covid19-Dash/data/"
     
 
 Months={'Jan':'01','Feb':'02','Mar':'03','Apr':'04',\
