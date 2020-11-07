@@ -1,22 +1,17 @@
+import os
+import time
+import numpy 
 import numpy as np
 import dash
-import plotly.express as px
-from plotly.subplots import make_subplots
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
 from datetime import date, datetime
-from data_utils import get_district_data,get_data_world,get_data_india
-from fig_utils import get_figure
-from fig_utils import get_bar_chart,get_pie
 from data_utils import collapsed_data
-import os
-import time
-import numpy 
+from data_utils import get_district_data,get_data_world,get_data_india
+from fig_utils import get_figure, get_bar_chart,get_pie
 
 numpy.seterr(divide = 'ignore') 
-
-
 
 os.environ["TZ"] = "Asia/Kolkata"
 time.tzset()
@@ -235,7 +230,6 @@ def update_graph(geography,region,district,rolling_type,rolling_size,start_date,
        fig = get_pie(df, geography) 
 
     else:
- 
        df.index = df['date'].to_list()
        mask = (df['date'] > start_date) & (df['date'] <= end_date)
        df = df.loc[mask]

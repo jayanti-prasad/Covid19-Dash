@@ -1,9 +1,11 @@
+import plotly
 import plotly.express as px
 from plotly.subplots import make_subplots
-from datetime import datetime,date
-import numpy as np
-from plotly.offline import plot
 import plotly.graph_objects as go
+from datetime import datetime,date
+from plotly.offline import plot
+import numpy as np
+
 
 def update_dropdown(name):
     if name == 'World':
@@ -131,15 +133,12 @@ def get_bar_chart (df, name):
 
     return fig
 
-
 def  get_pie(df, name):
 
     if name == 'World':
-       title = 'World'
+       title = 'World [Covid-19]'
     else:
-       title = 'India' 
-
-    #title = title + " [ " + col + " ] "
+       title = 'India [Covid-19]' 
 
     TAG = {'World':'country','India':'State'}
 
