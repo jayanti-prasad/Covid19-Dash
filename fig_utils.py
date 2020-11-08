@@ -175,10 +175,10 @@ if __name__ == "__main__":
        for region in regions:
            if geography == 'World':
               df = dF1[dF1['country'] == region['value']]
-              print(geography, region, df.shape, df.columns)
+              #print(geography, region, df.shape, df.columns)
            else :
               for state in states:
                   for district in STATES[state]:
                       df = get_district_data (df3,state,district)
-                      print(geography, region['value'], state, district, df.shape, df.columns)
+                      #print(geography, region['value'], state, district, df.shape, df.columns)
 

@@ -8,7 +8,7 @@ import dash_html_components as html
 from dash.dependencies import Input, Output
 from datetime import date, datetime
 from data_utils import collapsed_data
-from data_utils import get_district_data,get_data_world,get_data_india
+from data_utils import get_district_data,get_data_world,get_data_india,rename_columns
 from fig_utils import get_figure, get_bar_chart,get_pie
 
 numpy.seterr(divide = 'ignore') 
@@ -126,20 +126,6 @@ app.layout = html.Div([
 
 ])
 
-
-def transform (X, plot_style, rolling_type, rolling_size):
-    X = X.astype(float)
-    if plot_style == 'Log10':
-       return np.log10(X)
-    if rolling_type == 'Median':
-       return X.rolling(rolling_size).median()
-    if rolling_type == 'Mean':
-       return  X.rolling(rolling_size).mean()
-
-    return X
-
-
-
 @app.callback(
     dash.dependencies.Output('districts', 'options'),
     [dash.dependencies.Input('regions', 'value')]
@@ -203,32 +189,32 @@ def update_graph(geography,region,district,rolling_type,rolling_size,start_date,
           title = 'India'
 
     columns = ['confirmed','recovered','deaths']
-
+    TAG ={'World':'country','India':'State'}
+    DAT ={'World':dF1,'India':dF2}
+   
     if mode == 'Bar':
        if geography == 'World':
           df = collapsed_data (dF1,'country',30)[:-1]
-          if plot_style == 'Log10':
-             df = df.dropna()
-             df[columns] = np.log10(df[columns]) 
-          fig =  get_bar_chart (df, 'country')
        if geography == 'India':
-          df = collapsed_data (dF2, 'State', 30)[:-1]
-          if plot_style == 'Log10':
-             df[columns] = df[columns].astype(float)
-             df = df.dropna()
-             df[columns] = np.log10(df[columns])
+          if region in states and district in STATES[region]:
+              df = rename_columns(df3)
+              df = df[df['State'] == region]
+              df = collapsed_data (df, 'District', 30)
+              df = df[df['District'] != 'Others']
+              TAG[geography] = 'District' 
+          else: 
+              df = collapsed_data (dF2, 'State', 30)[:-1]
+          df[columns] = df[columns].astype(float)
+       if plot_style == 'Log10':
+           df[columns] = np.log10(df[columns])
 
-          fig =  get_bar_chart (df, 'State')
+       fig =  get_bar_chart (df, TAG[geography])
 
     elif mode == 'Pie':
-       if geography == 'World':
-          df = collapsed_data (dF1,'country',30)
-       if geography == 'India':
-          df = collapsed_data (dF2, 'State', 30)
-          df = df[df['State'] !='Total']
-          df[columns] = df[columns].astype(float)
-       fig = get_pie(df, geography) 
-
+       df = collapsed_data (DAT[geography],TAG[geography],30)
+       df = df[df[TAG[geography]] !='Total']
+       fig = get_pie(df, geography)
+ 
     else:
        df.index = df['date'].to_list()
        mask = (df['date'] > start_date) & (df['date'] <= end_date)

@@ -19,6 +19,11 @@ Months={'Jan':'01','Feb':'02','Mar':'03','Apr':'04',\
 
 # This is for  global data 
 
+def rename_columns(df):
+   return  df.rename(columns={'Date': 'date','Confirmed':'confirmed',\
+     'Recovered':'recovered','Deceased':'deaths'}, errors="raise")
+
+
 def date_formatting(date_string):
    parts = date_string.split('-')
    date_time_str = '2020-' + Months[parts[1]] + "-" + parts[0]
@@ -145,7 +150,6 @@ def collapsed_data (dF, name, num_rows):
     return df1  
 
 
-
 if __name__ == "__main__":
 
    parser = argparse.ArgumentParser()
@@ -163,9 +167,9 @@ if __name__ == "__main__":
    STATE_DICT = get_districts (df3)
    
 
-   print(dF.shape, dF.columns)
-   print("States:",STATES)
-   print("States:",STATE_DICT)   
+   #print(dF.shape, dF.columns)
+   #print("States:",STATES)
+   #print("States:",STATE_DICT)   
 
    if args.district:
       df = get_district_data (df3,STATES[args.state_code],args.district)
