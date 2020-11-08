@@ -195,6 +195,7 @@ def update_graph(geography,region,district,rolling_type,rolling_size,start_date,
     if mode == 'Bar':
        if geography == 'World':
           df = collapsed_data (dF1,'country',30)[:-1]
+          title = 'World'
        if geography == 'India':
           if region in states and district in STATES[region]:
               df = rename_columns(df3)
@@ -202,13 +203,15 @@ def update_graph(geography,region,district,rolling_type,rolling_size,start_date,
               df = collapsed_data (df, 'District', 30)
               df = df[df['District'] != 'Others']
               TAG[geography] = 'District' 
+              title = region 
           else: 
               df = collapsed_data (dF2, 'State', 30)[:-1]
+              title = 'India'
           df[columns] = df[columns].astype(float)
        if plot_style == 'Log10':
            df[columns] = np.log10(df[columns])
 
-       fig =  get_bar_chart (df, TAG[geography])
+       fig =  get_bar_chart (df, TAG[geography],title)
 
     elif mode == 'Pie':
        df = collapsed_data (DAT[geography],TAG[geography],30)

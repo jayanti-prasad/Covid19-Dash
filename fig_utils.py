@@ -95,7 +95,7 @@ def get_figure (df, region, title, mode, plot_style, rolling_type, rolling_size)
 
     return fig
 
-def get_bar_chart (df, name):
+def get_bar_chart (df, name,title):
     df = df[df[name] !='Total']
     x = df[name].to_list()
     L1,L2,L3='Confirmed','Recovered','Deaths'
@@ -108,12 +108,6 @@ def get_bar_chart (df, name):
     trace2 = fig2['data'][0]
     trace3 = fig3['data'][0]
   
-    if name == 'country':
-       title = 'World'
-    else:
-       title = 'India'
-  
-
     fig = make_subplots(rows=2, cols=1,shared_xaxes=False,\
       horizontal_spacing=0.1, vertical_spacing=0.05,y_title='Covid-19',subplot_titles=([title]))
 
