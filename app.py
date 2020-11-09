@@ -191,7 +191,9 @@ def update_graph(geography,region,district,rolling_type,rolling_size,start_date,
     columns = ['confirmed','recovered','deaths']
     TAG ={'World':'country','India':'State'}
     DAT ={'World':dF1,'India':dF2}
+    TITLE ={'World':'Covid-19 [World]','India':'Covid-19 [India]'}
    
+
     if mode == 'Bar':
        if geography == 'World':
           df = collapsed_data (dF1,'country',30)[:-1]
@@ -214,9 +216,17 @@ def update_graph(geography,region,district,rolling_type,rolling_size,start_date,
        fig =  get_bar_chart (df, TAG[geography],title)
 
     elif mode == 'Pie':
-       df = collapsed_data (DAT[geography],TAG[geography],30)
-       df = df[df[TAG[geography]] !='Total']
-       fig = get_pie(df, geography)
+       if geography == 'India' and district in STATES[region]:
+           df = rename_columns(df3)
+           df = df[df['State'] == region]
+           df = collapsed_data (df, 'District', 30)
+           df = df[df['District'] != 'Others']
+           geography = 'District'
+           TITLE['District'] = "Covid-19 [" + region + " ]"
+       else:
+           df = collapsed_data (DAT[geography],TAG[geography],30)
+           df = df[df[TAG[geography]] !='Total']
+       fig = get_pie(df, geography,TITLE[geography])
  
     else:
        df.index = df['date'].to_list()

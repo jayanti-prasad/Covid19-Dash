@@ -129,14 +129,9 @@ def get_bar_chart (df, name,title):
 
     return fig
 
-def  get_pie(df, name):
+def  get_pie(df, name,title):
 
-    if name == 'World':
-       title = 'World [Covid-19]'
-    else:
-       title = 'India [Covid-19]' 
-
-    TAG = {'World':'country','India':'State'}
+    TAG = {'World':'country','India':'State','District':'District'}
  
     if platform.system() == 'Darwin':
        fig = make_subplots(rows=1, cols=2, specs=[[{"type": "pie"}, {"type": "pie"}]],\
