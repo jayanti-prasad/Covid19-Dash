@@ -20,7 +20,7 @@ def update_repo (git_dir):
 def update_india (args):
     print("Updating data for India")
     SOURCE="https://api.covid19india.org/csv/latest/"
-    files=["state_wise","state_wise_daily","district_wise","tested_numbers_icmr_data"]
+    files=["state_wise","state_wise_daily","district_wise","districts","tested_numbers_icmr_data"]
     for f in files:
        urllib.request.urlretrieve(SOURCE+f+".csv", args.output_dir + os.sep + f+'.csv')
        print("downloaded", args.output_dir + os.sep + f+".csv")

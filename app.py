@@ -216,7 +216,7 @@ def update_graph(geography,region,district,rolling_type,rolling_size,start_date,
        fig =  get_bar_chart (df, TAG[geography],title)
 
     elif mode == 'Pie':
-       if geography == 'India' and district in STATES[region]:
+       if geography == 'India' and region in states and district in STATES[region]:
            df = rename_columns(df3)
            df = df[df['State'] == region]
            df = collapsed_data (df, 'District', 30)
