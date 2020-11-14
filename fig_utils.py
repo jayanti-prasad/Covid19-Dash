@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import platform
+import plotly
 import plotly.express as px
 from plotly.subplots import make_subplots
 
