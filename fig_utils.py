@@ -1,6 +1,9 @@
+import sys
 import numpy as np
 import pandas as pd
 import platform
+if platform.system() != 'Darwin': 
+  sys.path.append("/usr/lib/python3.8/site-packages/")
 import plotly
 import plotly.express as px
 from plotly.subplots import make_subplots
