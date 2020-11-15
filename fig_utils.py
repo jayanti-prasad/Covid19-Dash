@@ -76,7 +76,7 @@ def plot_pi_plot(df,name,title):
     fig.add_trace(go.Pie(values=df['deaths'].to_list(),labels=labels,
        domain=dict(x=[0.5, 1.0]), name="Deaths"), row=1, col=2)
 
-   return fig 
+    return fig 
 
 def get_ts_plot(args, DL):
     if args.geography == 'World':
