@@ -2,8 +2,6 @@ import sys
 import numpy as np
 import pandas as pd
 import platform
-if platform.system() != 'Darwin': 
-  sys.path.append("/usr/lib/python3.8/site-packages/")
 import plotly
 import plotly.express as px
 from plotly.subplots import make_subplots
@@ -69,17 +67,14 @@ def plot_bar_chart(df, name,scale, title):
 
 
 def plot_pi_plot(df,name,title):
-   if platform.system() == 'Darwin':
-      import plotly.graph_objects as go
-      labels = df[name].to_list() 
-      fig = make_subplots(rows=1, cols=2, specs=[[{"type": "pie"}, {"type": "pie"}]],\
-         x_title=title,subplot_titles=(['Confirmed','Deaths']))
-      fig.add_trace(go.Pie(values=df['confirmed'].to_list(),labels=labels,domain=dict(x=[0, 0.5]),
-      name="Confirmed"), row=1, col=1)
-      fig.add_trace(go.Pie(values=df['deaths'].to_list(),labels=labels,
-         domain=dict(x=[0.5, 1.0]), name="Deaths"), row=1, col=2)
-   else:
-      fig = px.pie(df, values='confirmed', names=name, title=title + " [ confirmed ]" )
+    import plotly.graph_objects as go
+    labels = df[name].to_list() 
+    fig = make_subplots(rows=1, cols=2, specs=[[{"type": "pie"}, {"type": "pie"}]],\
+       x_title=title,subplot_titles=(['Confirmed','Deaths']))
+    fig.add_trace(go.Pie(values=df['confirmed'].to_list(),labels=labels,domain=dict(x=[0, 0.5]),
+    name="Confirmed"), row=1, col=1)
+    fig.add_trace(go.Pie(values=df['deaths'].to_list(),labels=labels,
+       domain=dict(x=[0.5, 1.0]), name="Deaths"), row=1, col=2)
 
    return fig 
 

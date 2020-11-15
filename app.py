@@ -187,7 +187,7 @@ def update_graph(geography,region,sub_region,mode,tstype,scale,rolling_type,roll
        fig = get_ts_plot(args, DL)
     if args.mode == 'Bar':
        fig = get_bar_plot(args, DL)
-    if args.mode == 'Pie':
+    if args.mode == 'Pie' and platform.system() == 'Darwin':
        fig = get_pie_plot(args, DL)
 
     fig.update_layout({'legend_orientation':'h'})
