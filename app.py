@@ -42,37 +42,34 @@ app.layout = html.Div([
               id='geography',
               options=[{'label': i, 'value': i} for i in ['World','India']],
               value='India',
-              labelStyle={'display': 'inline-block'}),
-              style={'width': '100%', 'display': 'inline-block'}),
+              labelStyle={'display': 'inline-block'})),
+
         html.Td(
            dcc.DatePickerRange(
               id='date-picker-range',
               start_date_placeholder_text="Start Date",
               end_date_placeholder_text="End Date",
               start_date=start_date,
-              end_date=end_date,
-              style={'width': '100%', 'display': 'inline-block'})),
+              end_date=end_date)),
         html.Td(),
         html.Td(),
-      ],style={'background-color':'#008B8B'}),
+      ]),
       html.Tr([
         html.Td(
            dcc.Dropdown(
               id='region',
-              ),style={'width': '100%', 'display': 'inline-block'}),
-
+              )),
          html.Td(
             dcc.RadioItems(
               id='mode',
               options=[{'label': i, 'value': i} for i in ['Bar','Pie','TimeSeries']],
               value='TimeSeries',
-              labelStyle={'display': 'inline-block'}),
-              ),
+              labelStyle={'display': 'inline-block'}),),
         html.Td(
            dcc.Dropdown(
              id='tstype',
              value='Total',
-        )), 
+        ),), 
         html.Td(
            dcc.RadioItems(
              id='scale',
@@ -80,12 +77,12 @@ app.layout = html.Div([
              value='linear',
              labelStyle={'display': 'inline-block'}),
             ),
-      ],style={'background-color':'#BDB76B'}),
+      ]),
     html.Tr([
         html.Td(
           dcc.Dropdown(
              id='sub_region',
-             ),style={'width': '100%', 'display': 'inline-block'}),
+             )),
         html.Td(
           dcc.Dropdown(
              id='rolling_type',
@@ -99,15 +96,14 @@ app.layout = html.Div([
              value=1,),
         ),
      html.Td(),
-    ],style={'background-color':'#FFDEAD'}),
+    ]),
     html.Tr([
        html.Td("Data Source",style={'width': '100%', 'display': 'inline-block'}),
        html.Td("https://github.com/CSSEGISandData/COVID-19"),
        html.Td("https://api.covid19india.org/"),
        html.Td(),
-    ],style={'background-color':'#008B8B'}),
-
-    ],style={'width':'100%','float':'center'}
+    ]),
+    ],style={'border': '4px solid black','background-color':'#FFFFE0'},
     ),
 
     html.Div([
@@ -118,8 +114,7 @@ app.layout = html.Div([
     html.Hr(),
     dcc.Graph(id='indicator-graphic'),
    ]),
-   html.Table([  html.Tr([ html.Td(  html.H1(children= '(c) Jayanti Prasad 2020', style={'text-align': 'center'}))])  ],
-     style={'width':'100%','float':'center','background-color':'#008B8B'}),
+  html.H3(children= '(c) Jayanti Prasad 2020', style={'text-align': 'center'}),
 ])
 
 
