@@ -108,9 +108,6 @@ app.layout = html.Div([
 
     html.Div([
     html.Div([ html.Div(id='output-container-date-picker'),]),
-    html.Br(),
-    html.Br(),
-    html.Br(),
     html.Hr(),
     dcc.Graph(id='indicator-graphic'),
    ]),
