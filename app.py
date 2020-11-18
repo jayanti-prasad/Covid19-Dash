@@ -32,6 +32,12 @@ app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
 app.title = 'Jayanti Prasad\'s Covid-19 Dashboard'
 
+my_js_url=['display.js']
+app.scripts.append_script({
+"external_url": my_js_url
+})
+
+
 app.layout = html.Div([
     html.H1(children='Covid-19',style={'text-align': 'left'}),
     html.Table(

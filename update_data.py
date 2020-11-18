@@ -55,7 +55,7 @@ if __name__ == "__main__":
 
    parser = argparse.ArgumentParser()
    parser.add_argument('-i','--input-dir',help='Input dir',\
-      default='/Users/jayanti/Data/COVID-19/COVID-19/')
+      default='/Users/jayanti/Data/COVID-19/')
    parser.add_argument('-o','--output-dir',help='Output  dir',default='data')
    parser.add_argument('-c','--country',help='Country')
 
