@@ -44,7 +44,7 @@ def plot_time_seris(df, mode, scale, title, style):
 def plot_bar_chart(df, name,scale, title):
     fig = make_subplots(rows=2, cols=1,shared_xaxes=False,\
       horizontal_spacing=0.1, vertical_spacing=0.05,\
-      subplot_titles=(["Covid-19: " title]))
+      subplot_titles=(["Covid-19: "+ title]))
     columns=['confirmed','recovered','deaths']
     rows=[1,1,2]
     colors=['blue','green','red']
