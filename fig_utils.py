@@ -7,25 +7,30 @@ import plotly.express as px
 from plotly.subplots import make_subplots
 
 def plot_time_seris(df, mode, scale, title, style):
+    title = "Covid-19: " + title  
     fig = make_subplots(rows=2, cols=1,shared_xaxes=False,\
-      horizontal_spacing=0.1, vertical_spacing=0.05,\
-      subplot_titles=(["Covid-19: " + title]))
+      horizontal_spacing=0.1, vertical_spacing=0.05)
     if mode == 'Active':
        df['removed'] = df['recovered'].add (df['deaths'],fill_value=0)
        df['active']  = df['confirmed'].subtract (df['removed'],fill_value=0)
        columns=['active','deaths']
        rows=[1,2]
        colors=['blue','red']
+       title = title + " (Active)"
     else:
        columns=['confirmed','recovered','deaths']
        rows=[1,1,2]
        colors=['blue','green','red']
+       if mode == 'Total':
+          title = title + " (Total)"
  
     count = 0 
     for column in columns:
        X = df[column] 
        if mode == 'Daily':
           X = X.diff(periods=1).iloc[1:]
+          if count == 0:
+             title = title + " (Daily)"
        if scale == 'log':
           X = X.astype(float)
           X = np.log10(X)  
@@ -38,13 +43,14 @@ def plot_time_seris(df, mode, scale, title, style):
        fig.add_trace(trace, row=rows[count], col=1)
        count +=1
 
+    fig.update_layout(title=title)
     return fig 
 
 
 def plot_bar_chart(df, name,scale, title):
+    title = "Covid-19: " + title  
     fig = make_subplots(rows=2, cols=1,shared_xaxes=False,\
-      horizontal_spacing=0.1, vertical_spacing=0.05,\
-      subplot_titles=(["Covid-19: "+ title]))
+      horizontal_spacing=0.1, vertical_spacing=0.05)
     columns=['confirmed','recovered','deaths']
     rows=[1,1,2]
     colors=['blue','green','red']
@@ -63,6 +69,7 @@ def plot_bar_chart(df, name,scale, title):
        fig.add_trace(trace, row=rows[count], col=1)
        count +=1
 
+    fig.update_layout(title=title)
     return fig
 
 
