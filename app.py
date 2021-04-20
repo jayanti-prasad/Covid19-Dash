@@ -109,7 +109,7 @@ app.layout = html.Div([
        html.Td("https://api.covid19india.org/"),
        html.Td(),
     ]),
-    ],style={'border': '4px solid black','background-color':'#FFFFE0'},
+    ],style={'width':'50%','border': '4px solid black','background-color':'#FFFFE0'},
     ),
 
     html.Div([
@@ -189,6 +189,7 @@ def update_graph(geography,region,sub_region,mode,tstype,scale,rolling_type,roll
        fig = get_pie_plot(args, DL)
 
     fig.update_layout({'legend_orientation':'h'})
+    #fig.update_layout(margin=dict(l=10, r=10, t=40, b=20))
     fig.update_layout(height=800,width=1200,margin=dict(l=10, r=10, t=40, b=20))
 
     return fig
