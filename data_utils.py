@@ -8,24 +8,11 @@ if platform.system() == 'Darwin':
 else:
    data_path="https://raw.githubusercontent.com/jayanti-prasad/Covid19-Dash/master/data/"
    
-
-Months={'Jan':'01','Feb':'02','Mar':'03','Apr':'04',\
-   'May':'05','Jun':'06','Jul':'07','Aug':'08',\
-   'Sep':'09','Oct':'10','Nov':'11','Dec':'12'}
-
-
-
-def date_formatting(date_string):
-   parts = date_string.split('-')
-   date_time_str = '2020-' + Months[parts[1]] + "-" + parts[0]
-   return datetime.strptime(date_time_str, '%Y-%m-%d')
-
-
 class DataLoader:
    def __init__(self,):
        self.df_global = pd.read_csv(data_path + os.sep + "covid-19-global.csv", parse_dates=['date'])
-       self.df_state_wise = pd.read_csv(data_path + os.sep + "state_wise.csv")
-       self.df_state_wise_daily = pd.read_csv(data_path + os.sep + "state_wise_daily.csv")
+       self.df_state_wise = pd.read_csv(data_path + os.sep + "state_wise.csv",parse_dates=['Last_Updated_Time'])
+       self.df_state_wise_daily = pd.read_csv(data_path + os.sep + "state_wise_daily.csv",parse_dates=['Date','Date_YMD'])
        self.df_districts = pd.read_csv(data_path + os.sep + "districts.csv",parse_dates=['Date'])
        self.countries = None 
        self.STATES = {}
@@ -88,7 +75,6 @@ class DataLoader:
        else:
           state_code = self.STATES_CODE[state]   
           dF = self.df_state_wise_daily[['Date','Status',state_code]].copy()
-          dF['Date'] = [date_formatting(d) for d in  dF['Date'].to_list()]
           df_state = pd.DataFrame()
           df_state['Date'] = sorted(list(set(dF['Date'].to_list() )))
           df_state['State'] = [state for i in range (0, len(df_state))]

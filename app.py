@@ -26,8 +26,15 @@ DL = DataLoader()
 start_date = datetime.strptime('2020-01-01', '%Y-%m-%d')
 end_date = date.today()
 
-external_stylesheets = ['bWLwgP.css']
-external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+#external_stylesheets = ['bWLwgP.css']
+#external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+external_stylesheets=['mystyle.css']
+
+colors = {
+    'background': '#111111',
+    'text': '#7FDBFF'
+}
+
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
 app.title = 'Jayanti Prasad\'s Covid-19 Dashboard'
